@@ -1,43 +1,61 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
+//require own module
+const date = require(__dirname + "/date.js");
+
 const app = express();
 
-let items = ["Buy food", "Cook food", "Eat food"];
+const items = ["Get up", "Have a nice day", "Go to sleep"];
+const workItems = [];
 
 // use ejs as app's view engine - https://github.com/mde/ejs/wiki/Using-EJS-with-Express
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(express.static("public"));
 
 app.get("/", function(req, res) {
 
-  let today = new Date();
-
-  let options = {
-    weekday: "long",
-    day: "numeric",
-    month: "long"
-  };
-
-  let day = today.toLocaleDateString("en-US", options);
-
+  const day = date.getDate();
   res.render("list", {
-    kindOfDay: day,
+    listTitle: day,
     newListItems: items
   });
 });
 
 app.post("/", function(req, res) {
-  let item = req.body.newItem;
-  items.push(item);
+  const item = req.body.newItem;
+  if (req.body.list === "Work") {
+    workItems.push(item);
+    res.redirect("/work");
+  } else {
+    items.push(item);
+    res.redirect("/");
+  }
+});
+
+app.get("/work", function(req, res) {
+  res.render("list", {
+    listTitle: "Work List",
+    newListItems: workItems
+  });
+});
+
+app.post("/work", function(req, res) {
+  workItems.push(item);
 
   res.redirect("/");
-})
+});
 
+app.get("/about", function(req, res) {
+  res.render("about");
+});
 
 app.listen(3000, function() {
-  console.log("Server started on port 3000")
+  console.log("Server started on port 3000");
 });
