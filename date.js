@@ -1,3 +1,5 @@
+//jshint esversion:6
+
 exports.getDate = function() {
 
   const today = new Date();
@@ -9,7 +11,7 @@ exports.getDate = function() {
   };
 
   return today.toLocaleDateString("en-US", options);
-}
+};
 
 //module.exports = exports
 exports.getDay = function() {
@@ -21,6 +23,6 @@ exports.getDay = function() {
   };
 
   return today.toLocaleDateString("en-US", options);
-}
+};
 
 console.log(module.exports);
